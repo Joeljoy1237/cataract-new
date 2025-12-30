@@ -1,0 +1,248 @@
+:root {
+  --bg-color: #0d1117;
+  --card-bg: #161b22;
+  --primary: #00f2ff;
+  --secondary: #7000ff;
+  --text-main: #e6edf3;
+  --text-muted: #8b949e;
+  --success: #2ea043;
+  --danger: #da3633;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1000px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+header h1 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 3rem;
+  letter-spacing: 2px;
+}
+
+.highlight {
+  color: var(--primary);
+}
+
+.pulse {
+  display: inline-block;
+  animation: pulse-anim 2s infinite;
+}
+
+@keyframes pulse-anim {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Upload Section */
+.upload-section {
+  width: 100%;
+  max-width: 600px;
+  height: 250px;
+  border: 2px dashed var(--text-muted);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(22, 27, 34, 0.5);
+}
+
+.upload-section:hover,
+.upload-section.dragover {
+  border-color: var(--primary);
+  background: rgba(0, 242, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+}
+
+.upload-content {
+  text-align: center;
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Loader */
+.loader {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.scanner {
+  width: 100%;
+  max-width: 300px;
+  height: 4px;
+  background: var(--card-bg);
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto 1rem;
+  border-radius: 2px;
+}
+
+.scanner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+  animation: scan 1.5s infinite linear;
+}
+
+@keyframes scan {
+  0% {
+    left: -40%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Results Section */
+.results-section {
+  width: 100%;
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pipeline-view {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid #30363d;
+}
+
+.step {
+  text-align: center;
+  flex: 1;
+  min-width: 120px;
+  margin: 0.5rem;
+}
+
+.step img {
+  width: 100%;
+  max-width: 150px;
+  border-radius: 8px;
+  border: 1px solid var(--text-muted);
+  transition: transform 0.3s;
+}
+
+.step img:hover {
+  transform: scale(1.5);
+  z-index: 10;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.step span {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.arrow {
+  font-size: 1.5rem;
+  color: var(--text-muted);
+}
+
+.diagnosis-card {
+  text-align: center;
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #30363d;
+}
+
+.status {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  font-family: "Orbitron", sans-serif;
+}
+
+.status.Normal {
+  color: var(--success);
+  text-shadow: 0 0 15px rgba(46, 160, 67, 0.4);
+}
+.status.Cataract {
+  color: var(--danger);
+  text-shadow: 0 0 15px rgba(218, 54, 51, 0.4);
+}
+
+.reset-btn {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 0.8rem 2rem;
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  background: var(--primary);
+  color: #000;
+}
+
+.hidden {
+  display: none;
+}

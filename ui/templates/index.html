@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cataract AI Diagnostic</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <header>
+        <h1>
+          <span class="pulse">👁️</span> Cataract<span class="highlight"
+            >AI</span
+          >
+        </h1>
+        <p>Advanced Deep Learning Diagnostics</p>
+      </header>
+
+      <main>
+        <div class="upload-section" id="drop-zone">
+          <input type="file" id="file-input" accept="image/*" hidden />
+          <div class="upload-content">
+            <div class="icon">📤</div>
+            <h3>Upload Eye Image</h3>
+            <p>Drag & Drop or Click to Browse</p>
+          </div>
+        </div>
+
+        <div class="loader hidden" id="loader">
+          <div class="scanner"></div>
+          <p>Analyzing Retinal Structures...</p>
+        </div>
+
+        <div class="results-section hidden" id="results">
+          <div class="pipeline-view">
+            <div class="step">
+              <span>Original</span>
+              <img id="img-original" src="" alt="Original" />
+            </div>
+            <div class="arrow">➔</div>
+            <div class="step">
+              <span>Green Channel</span>
+              <img id="img-green" src="" alt="Green Channel" />
+            </div>
+            <div class="arrow">➔</div>
+            <div class="step">
+              <span>Denoised</span>
+              <img id="img-denoised" src="" alt="Denoised" />
+            </div>
+            <div class="arrow">➔</div>
+            <div class="step">
+              <span>Enhanced (CLAHE)</span>
+              <img id="img-clahe" src="" alt="CLAHE" />
+            </div>
+          </div>
+
+          <div class="diagnosis-card">
+            <h2>Diagnosis Result</h2>
+            <div class="status" id="diagnosis-text">--</div>
+            <div class="confidence">
+              Confidence: <span id="confidence-score">--</span>
+            </div>
+          </div>
+
+          <button class="reset-btn" onclick="location.reload()">
+            Analyze Another
+          </button>
+        </div>
+      </main>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
