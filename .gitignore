@@ -8,3 +8,17 @@ venv/
 .vscode/
 saved_models/
 data/processed/
+
+# Images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.webp
+*.svg
+
+# Datasets
+slit-lamp/
+cataract/
