@@ -20,6 +20,12 @@ class Config:
     NUM_CLASSES = 1 # Binary classification
     DROPOUT_RATE = 0.5
     
+    # Slit-Lamp Params
+    SLIT_LAMP_DIR = os.path.join(BASE_DIR, 'slit-lamp')
+    SLIT_LAMP_CLASSES = ['normal', 'immature', 'mature']
+    SLIT_LAMP_NUM_CLASSES = 3
+    SLIT_LAMP_MODEL_NAME = 'densenet169_slit_lamp'
+    
     # Training params
     LEARNING_RATE = 1e-4
     EPOCHS = 20
