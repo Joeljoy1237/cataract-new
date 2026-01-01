@@ -73,3 +73,66 @@ class CataractDataset(Dataset):
             # Return a dummy tensor or handle appropriately (potentially dangerous during training)
             # For robust training, usually we might skip or retry, but strict failure is better for debugging
             raise e
+
+class SlitLampDataset(Dataset):
+    def __init__(self, root_dir, transform=None, return_steps=False):
+        """
+        Args:
+            root_dir (str): Directory with class folders (e.g., config.SLIT_LAMP_DIR)
+            transform (callable, optional): Optional transform to be applied on a sample.
+            return_steps (bool): If True, returns intermediate preprocessing steps.
+        """
+        self.root_dir = root_dir
+        self.transform = transform
+        self.return_steps = return_steps
+        self.classes = Config.SLIT_LAMP_CLASSES
+        self.image_paths = []
+        self.labels = []
+
+        self._load_dataset()
+
+    def _load_dataset(self):
+        if not os.path.exists(self.root_dir):
+            raise FileNotFoundError(f"Directory not found: {self.root_dir}")
+
+        for label_idx, class_name in enumerate(self.classes):
+            class_dir = os.path.join(self.root_dir, class_name)
+            if not os.path.exists(class_dir):
+                print(f"Warning: Class directory {class_name} not found in {self.root_dir}")
+                continue
+            
+            for fname in os.listdir(class_dir):
+                if fname.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    self.image_paths.append(os.path.join(class_dir, fname))
+                    self.labels.append(label_idx)
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        img_path = self.image_paths[idx]
+        label = self.labels[idx]
+
+        try:
+            image = load_image(img_path)
+            processed_img, steps = preprocess_pipeline(image, target_size=Config.IMAGE_SIZE)
+            
+            # Stack 3 channels for DenseNet
+            if processed_img.shape[-1] != 3:
+                 # If preprocessing returns 1 channel or something else, handle it.
+                 # Pipeline usually returns (H, W, 3) now (see pipeline.py:75)
+                 pass
+
+            tensor_img = torch.tensor(processed_img).permute(2, 0, 1).float()
+
+            if self.transform:
+                tensor_img = self.transform(tensor_img)
+
+            if self.return_steps:
+                return tensor_img, label, steps, img_path
+            
+            return tensor_img, label
+
+        except Exception as e:
+            print(f"Error processing image {img_path}: {e}")
+            raise e
