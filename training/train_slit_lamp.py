@@ -12,6 +12,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import Config
 from preprocessing.dataset import SlitLampDataset
 from models.densenet import get_model
+from preprocessing.augmentations import get_train_transforms, get_valid_transforms
+from torch.utils.data import Dataset
 
 def train_one_epoch(model, loader, criterion, optimizer, device):
     model.train()
@@ -74,12 +76,30 @@ def main(args):
     print(f"Using device: {device}")
     
     # 1. Prepare Data
+    # 1. Prepare Data
     full_dataset = SlitLampDataset(root_dir=Config.SLIT_LAMP_DIR)
     
     # Split 80/20
     train_size = int(0.8 * len(full_dataset))
     valid_size = len(full_dataset) - train_size
-    train_dataset, valid_dataset = random_split(full_dataset, [train_size, valid_size])
+    train_subset, valid_subset = random_split(full_dataset, [train_size, valid_size])
+    
+    class TransformDataset(Dataset):
+        def __init__(self, subset, transform=None):
+            self.subset = subset
+            self.transform = transform
+            
+        def __getitem__(self, index):
+            x, y = self.subset[index]
+            if self.transform:
+                x = self.transform(x)
+            return x, y
+            
+        def __len__(self):
+            return len(self.subset)
+
+    train_dataset = TransformDataset(train_subset, transform=get_train_transforms('slit_lamp'))
+    valid_dataset = TransformDataset(valid_subset, transform=get_valid_transforms('slit_lamp'))
     
     train_loader = DataLoader(
         train_dataset, 

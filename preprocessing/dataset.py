@@ -115,7 +115,7 @@ class SlitLampDataset(Dataset):
 
         try:
             image = load_image(img_path)
-            processed_img, steps = preprocess_pipeline(image, target_size=Config.IMAGE_SIZE)
+            processed_img, steps = preprocess_pipeline(image, target_size=Config.IMAGE_SIZE, use_green_channel=False)
             
             # Stack 3 channels for DenseNet
             if processed_img.shape[-1] != 3:
@@ -131,6 +131,50 @@ class SlitLampDataset(Dataset):
             if self.return_steps:
                 return tensor_img, label, steps, img_path
             
+            return tensor_img, label
+
+        except Exception as e:
+            print(f"Error processing image {img_path}: {e}")
+            raise e
+
+class MultiClassCataractDataset(Dataset):
+    def __init__(self, image_paths, labels, transform=None, expansion_factor=1):
+        """
+        Args:
+            image_paths (list): List of file paths to images.
+            labels (list): List of corresponding labels.
+            transform (callable, optional): Transform to be applied on a sample.
+            expansion_factor (int): Multiplier for dataset size (for augmentation).
+        """
+        self.image_paths = image_paths
+        self.labels = labels
+        self.transform = transform
+        self.expansion_factor = expansion_factor
+        self.original_len = len(self.image_paths)
+
+    def __len__(self):
+        return self.original_len * self.expansion_factor
+
+    def __getitem__(self, idx):
+        # Map expanded index back to original index
+        original_idx = idx % self.original_len
+        
+        img_path = self.image_paths[original_idx]
+        label = self.labels[original_idx]
+
+        try:
+            image = load_image(img_path)
+            # Use binary=False or implicit handling if pipeline is generic.
+            # Assuming pipeline returns an image suitable for the model input size.
+            # We must ensure pipeline doesn't do things specific to binary if not needed, 
+            # but currently reuse preprocessing_pipeline.
+            processed_img, _ = preprocess_pipeline(image, target_size=Config.IMAGE_SIZE)
+            
+            tensor_img = torch.tensor(processed_img).permute(2, 0, 1).float()
+
+            if self.transform:
+                tensor_img = self.transform(tensor_img)
+
             return tensor_img, label
 
         except Exception as e:

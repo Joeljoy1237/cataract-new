@@ -10,6 +10,7 @@ from tqdm import tqdm
 from config import Config
 from preprocessing.dataset import CataractDataset
 from models.densenet import get_model
+from preprocessing.augmentations import get_train_transforms, get_valid_transforms
 
 def train_one_epoch(model, loader, criterion, optimizer, device):
     model.train()
@@ -72,8 +73,16 @@ def main(args):
     print(f"Using device: {device}")
     
     # 1. Prepare Data
-    train_dataset = CataractDataset(root_dir=Config.RAW_DATA_DIR, split='train')
-    valid_dataset = CataractDataset(root_dir=Config.RAW_DATA_DIR, split='valid')
+    train_dataset = CataractDataset(
+        root_dir=Config.RAW_DATA_DIR, 
+        split='train',
+        transform=get_train_transforms('fundus')
+    )
+    valid_dataset = CataractDataset(
+        root_dir=Config.RAW_DATA_DIR, 
+        split='valid',
+        transform=get_valid_transforms('fundus')
+    )
     
     train_loader = DataLoader(
         train_dataset, 

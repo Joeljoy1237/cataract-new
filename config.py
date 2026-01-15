@@ -5,7 +5,7 @@ class Config:
     # Project Paths
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     DATA_DIR = os.path.join(BASE_DIR, 'data')
-    RAW_DATA_DIR = os.path.join(BASE_DIR, 'Cataract')
+    RAW_DATA_DIR = os.path.join(BASE_DIR, 'Cataract', 'Cataract')
     PROCESSED_DATA_DIR = os.path.join(DATA_DIR, 'processed')
     SPLITS_DIR = os.path.join(DATA_DIR, 'splits')
     MODEL_SAVE_DIR = os.path.join(BASE_DIR, 'saved_models')
@@ -21,7 +21,7 @@ class Config:
     DROPOUT_RATE = 0.5
     
     # Slit-Lamp Params
-    SLIT_LAMP_DIR = os.path.join(BASE_DIR, 'slit-lamp')
+    SLIT_LAMP_DIR = os.path.join(BASE_DIR, 'Cataract Slitlamp', 'slit-lamp')
     SLIT_LAMP_CLASSES = ['normal', 'immature', 'mature']
     SLIT_LAMP_NUM_CLASSES = 3
     SLIT_LAMP_MODEL_NAME = 'densenet169_slit_lamp'

@@ -22,3 +22,5 @@ data/processed/
 # Datasets
 slit-lamp/
 cataract/
+data/
+dataset_cataract_final/

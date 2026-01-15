@@ -36,6 +36,47 @@ function resetFundus() {
 }
 
 
+// --- Fundus Multi-Class Logic ---
+const dropZoneMulti = document.getElementById('drop-zone-multi');
+const fileInputMulti = document.getElementById('file-input-multi');
+const loaderMulti = document.getElementById('loader-multi');
+const resultsMulti = document.getElementById('results-multi');
+
+if (dropZoneMulti) {
+    setupDragDrop(dropZoneMulti, fileInputMulti, handleMultiFile);
+}
+
+function handleMultiFile(file) {
+    processFile(file, '/predict_multiclass', loaderMulti, resultsMulti, displayMultiResults, resetMulti);
+}
+
+function displayMultiResults(data) {
+    // Set Images
+    document.getElementById('multi-img-original').src = data.visualizations.original;
+    document.getElementById('multi-img-green').src = data.visualizations.green;
+    document.getElementById('multi-img-denoised').src = data.visualizations.denoised;
+    document.getElementById('multi-img-clahe').src = data.visualizations.clahe;
+
+    // Set Text
+    const statusParams = document.getElementById('multi-diagnosis-text');
+    statusParams.textContent = data.prediction;
+    statusParams.className = `status ${data.prediction.toLowerCase()}`; // e.g. .mild, .severe
+
+    // document.getElementById('multi-confidence-score').textContent = data.confidence;
+    document.getElementById('multi-acc').textContent = data.metrics.accuracy;
+    document.getElementById('multi-prec').textContent = data.metrics.precision;
+    document.getElementById('multi-rec').textContent = data.metrics.recall;
+    document.getElementById('multi-f1').textContent = data.metrics.f1;
+}
+
+function resetMulti() {
+    dropZoneMulti.classList.remove('hidden');
+    resultsMulti.classList.add('hidden');
+    loaderMulti.classList.add('hidden');
+    fileInputMulti.value = '';
+}
+
+
 // --- Slit-Lamp Logic ---
 const dropZoneSlit = document.getElementById('drop-zone-slit');
 const fileInputSlit = document.getElementById('file-input-slit');
@@ -53,7 +94,7 @@ function handleSlitFile(file) {
 function displaySlitResults(data) {
     // Set Images
     document.getElementById('slit-img-original').src = data.visualizations.original;
-    document.getElementById('slit-img-green').src = data.visualizations.green;
+    // document.getElementById('slit-img-green').src = data.visualizations.green; // Removed
     document.getElementById('slit-img-denoised').src = data.visualizations.denoised;
     document.getElementById('slit-img-clahe').src = data.visualizations.clahe;
 
@@ -122,6 +163,8 @@ function processFile(file, endpoint, loaderEl, resultsEl, displayCallback, reset
 
     if (endpoint === '/predict') {
         dropZone.classList.add('hidden');
+    } else if (endpoint === '/predict_multiclass') {
+        dropZoneMulti.classList.add('hidden');
     } else {
         dropZoneSlit.classList.add('hidden');
     }
